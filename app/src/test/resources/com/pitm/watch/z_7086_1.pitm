@@ -1,0 +1,249 @@
+{
+    hands [
+        {
+            view {
+                joint 0,
+                zorder 2,
+                bitmap z_7086_1/hour.png,
+                axis main,
+            },
+            roles [
+                {
+                    role hour,
+                    scale hour,
+                },
+            ],
+            id hour,
+        },
+        {
+            view {
+                joint 0,
+                zorder 3,
+                bitmap z_7086_1/minute.png,
+                axis main,
+            },
+            roles [
+                {
+                    role minute,
+                    scale minsec,
+                },
+            ],
+            id minute,
+        },
+        {
+            view {
+                joint 0,
+                zorder 1,
+                bitmap z_7086_1/mini.png,
+                axis right,
+            },
+            roles [
+                {
+                    role second,
+                    scale minsec,
+                },
+            ],
+            id second,
+        },
+        {
+            view {
+                joint 0,
+                zorder 4,
+                bitmap z_7086_1/second.png,
+                axis main,
+            },
+            roles [
+                {
+                    role chrono_second,
+                    scale minsec,
+                },
+            ],
+            id chrono_second,
+        },
+        {
+            view {
+                joint 0,
+                zorder 1,
+                bitmap z_7086_1/mini.png,
+                axis left,
+            },
+            roles [
+                {
+                    role chrono_minute,
+                    scale minsec,
+                },
+            ],
+            id chrono_minute,
+        },
+        {
+            view {
+                joint 0,
+                zorder 1,
+                bitmap z_7086_1/mini.png,
+                axis right,
+            },
+            roles [
+                {
+                    role chrono_decisecond,
+                    scale deci,
+                    states [
+                        before30min,
+                    ],
+                },
+                {
+                    role chrono_hour,
+                    scale deci,
+                    states [
+                        after30min,
+                    ],
+                },
+            ],
+            id chrono_hour,
+        },
+    ],
+    bitmap z_7086_1/z_7086_1.jpg,
+    scales [
+        {
+            val {
+                min 0,
+                max 12,
+            },
+            degree {
+                min 0,
+                max 360,
+            },
+            id hour,
+        },
+        {
+            val {
+                min 0,
+                max 60,
+            },
+            degree {
+                min 0,
+                max 360,
+            },
+            id minsec,
+        },
+        {
+            val {
+                min 0,
+                max 10,
+            },
+            degree {
+                min 0,
+                max 360,
+            },
+            id deci,
+        },
+    ],
+    id z_7086_1,
+    triggers [
+        {
+            rect {
+                x 710,
+                width 10,
+                y 650,
+                height 10,
+            },
+            id A,
+            states [
+            ],
+        },
+        {
+            rect {
+                x 710,
+                width 10,
+                y 650,
+                height 10,
+            },
+            id B,
+            states [
+            ],
+        },
+    ],
+    axises [
+        {
+            pos {
+                x 600,
+                y 621,
+            },
+            id main,
+        },
+        {
+            pos {
+                x 482,
+                y 595,
+            },
+            id left,
+        },
+        {
+            pos {
+                x 710,
+                y 597,
+            },
+            id right,
+        },
+        {
+            pos {
+                x 596,
+                y 739,
+            },
+            id bottom,
+        },
+    ],
+    chrono {
+        hands [
+            chrono_second,
+            chrono_minute,
+            chrono_hour,
+        ],
+        buttons [
+            A,
+            B,
+        ],
+        automat [
+            {
+                action A,
+                from init,
+                to running,
+            },
+            {
+                action A,
+                from running,
+                to stopped,
+            },
+            {
+                action B,
+                from running,
+                to freezed,
+            },
+            {
+                action A,
+                from freezed,
+                to stopped,
+            },
+            {
+                action B,
+                from freezed,
+                to running,
+            },
+            {
+                action A,
+                from stopped,
+                to running,
+            },
+            {
+                action B,
+                from stopped,
+                to init,
+            },
+        ],
+        states [
+            init,
+            stopped,
+            running,
+            freezed,
+        ],
+    },
+},

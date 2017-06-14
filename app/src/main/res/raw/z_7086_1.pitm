@@ -1,0 +1,170 @@
+{
+  id z_7086_1
+  bitmap z_7086_1/z_7086_1.jpg
+  
+  axises [
+    { id main,   pos { x 600 y 621 } }
+    { id left,   pos { x 482 y 595 } }
+    { id right,  pos { x 710 y 597 } }
+    { id bottom, pos { x 596 y 739 } }
+  ]
+  
+  scales [
+    {
+      id hour
+      val    { min 0 max 12 }
+      degree { min 0 max 360 }
+    }
+    {
+      id minsec
+      val    { min 0 max 60 }
+      degree { min 0 max 360 }
+    }
+    {
+      id deci
+      val    { min 0 max 10 }
+      degree { min 0 max 360 }
+    }
+  ]
+  
+  hands [
+    { 
+      id hour
+      view {
+        axis main
+        bitmap z_7086_1/hour.png
+        joint 0
+        zorder 2
+      }
+      roles [
+        {
+          scale hour
+          role hour
+        }
+      ]
+    }
+    { 
+      id minute
+      view {
+        axis main
+        bitmap z_7086_1/minute.png
+        joint 0
+        zorder 3
+      }
+      roles [
+        {
+          scale minsec
+          role minute
+        }
+      ]
+    }
+    {
+      id second
+      view {
+        axis right
+        bitmap z_7086_1/mini.png
+        joint 0
+        zorder 1
+      }
+      roles [
+        {
+          scale minsec
+          role second
+        }
+      ]
+    }
+    {
+      id chrono_second
+      view {
+        axis main
+        bitmap z_7086_1/second.png
+        joint 0
+        zorder 4
+      }
+      roles [
+        {
+          scale minsec
+          role chrono_second
+        }
+      ]
+    }
+    {
+      id chrono_minute
+      view {
+        axis left
+        bitmap z_7086_1/mini.png
+        joint 0
+        zorder 1
+      }
+      roles [
+        {
+          scale minsec
+          role chrono_minute
+        }
+      ]
+    }
+    {
+      id chrono_hour
+      view {
+        axis right
+        bitmap z_7086_1/mini.png
+        joint 0
+        zorder 1
+      }
+      roles [
+        {
+          states [before30min]
+          scale deci
+          role chrono_decisecond
+        }
+        {
+          states [after30min]
+          scale deci
+          role chrono_hour
+        }
+      ]
+    }
+  ]
+  
+  triggers [
+    {
+      id A
+	  rect { x 710 y 650 width 10 height 10 }
+      states []
+    }
+    {
+      id B
+	  rect { x 710 y 650 width 10 height 10 }
+      states []
+    }
+    /*{
+      id C
+      rect { x 710 y 650 width 10 height 10 }
+      states [
+        {
+          id a
+          bitmap z_7086_1/Ca.png
+        }
+        {
+          id b
+          bitmap z_7086_1/Cb.png
+        }
+      ]
+    }*/
+  ]
+  
+  chrono {
+    hands [chrono_second, chrono_minute, chrono_hour]
+    buttons [A, B]
+    states [init stopped running freezed]
+    automat [
+      { from init, action A, to running }
+      { from running, action A, to stopped }
+      { from running, action B, to freezed }
+      { from freezed, action A, to stopped }
+      { from freezed, action B, to running }
+      { from stopped, action A, to running }
+      { from stopped, action B, to init }
+    ]
+  }
+}

@@ -4,7 +4,9 @@ import org.junit.Test;
 
 import com.pitm.watch.pitm.PitmParser;
 
-import java.util.Map;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -13,164 +15,56 @@ import static org.junit.Assert.*;
  */
 
 public class PitmTest {
+
+    static String streamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
+    static void printMap(StringBuilder out, HashMap<String, Object> map, int depth) {
+        out.append("{\n");
+        ++depth;
+        for(HashMap.Entry<String, Object> entry : map.entrySet()) {
+            for(int i = 0; i<depth; ++i) out.append("    ");
+            out.append(entry.getKey() + ' ');
+            Object value = entry.getValue();
+            if(value.getClass() == String.class) {
+                out.append((String)value + ",\n");
+            } else if(value.getClass() == HashMap.class) {
+                printMap(out, (HashMap<String, Object>)value, depth);
+            } else {
+                printArray(out, (ArrayList<Object>)value, depth);
+            }
+        }
+        for(int i = 0; i<depth-1; ++i) out.append("    ");
+        out.append("},\n");
+    }
+
+    static void printArray(StringBuilder out, ArrayList<Object> array, int depth) {
+        out.append("[\n");
+        ++depth;
+        for(Object value : array) {
+            for(int i = 0; i<depth; ++i) out.append("    ");
+            if(value.getClass() == String.class) {
+                out.append((String)value + ",\n");
+            } else if(value.getClass() == HashMap.class) {
+                printMap(out, (HashMap<String, Object>)value, depth);
+            } else {
+                printArray(out, (ArrayList<Object>)value, depth);
+            }
+        }
+        for(int i = 0; i<depth-1; ++i) out.append("    ");
+        out.append("],\n");
+    }
+
     @Test
-    public void addition_isCorrect() throws Exception {
-        Map<String, Object> map = PitmParser.parse("{\n" +
-                "  id z_7086_1\n" +
-                "  bitmap z_7086_1/z_7086_1.jpg\n" +
-                "  \n" +
-                "  axises [\n" +
-                "    { id main,   pos { x 600 y 621 } }\n" +
-                "    { id left,   pos { x 482 y 595 } }\n" +
-                "    { id right,  pos { x 710 y 597 } }\n" +
-                "    { id bottom, pos { x 596 y 739 } }\n" +
-                "  ]\n" +
-                "  \n" +
-                "  scales [\n" +
-                "    {\n" +
-                "      id hour\n" +
-                "      val    { min 0 max 12 }\n" +
-                "      degree { min 0 max 360 }\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id minsec\n" +
-                "      val    { min 0 max 60 }\n" +
-                "      degree { min 0 max 360 }\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id deci\n" +
-                "      val    { min 0 max 10 }\n" +
-                "      degree { min 0 max 360 }\n" +
-                "    }\n" +
-                "  ]\n" +
-                "  \n" +
-                "  hands [\n" +
-                "    { \n" +
-                "      id hour\n" +
-                "      view {\n" +
-                "        axis main\n" +
-                "        bitmap z_7086_1/hour.png\n" +
-                "        joint 0\n" +
-                "        zorder 2\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          scale hour\n" +
-                "          role hour\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "    { \n" +
-                "      id minute\n" +
-                "      view {\n" +
-                "        axis main\n" +
-                "        bitmap z_7086_1/minute.png\n" +
-                "        joint 0\n" +
-                "        zorder 3\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          scale minsec\n" +
-                "          role minute\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id second\n" +
-                "      view {\n" +
-                "        axis right\n" +
-                "        bitmap z_7086_1/mini.png\n" +
-                "        joint 0\n" +
-                "        zorder 1\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          scale minsec\n" +
-                "          role second\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id chrono_second\n" +
-                "      view {\n" +
-                "        axis main\n" +
-                "        bitmap z_7086_1/second.png\n" +
-                "        joint 0\n" +
-                "        zorder 4\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          scale minsec\n" +
-                "          role chrono_second\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id chrono_minute\n" +
-                "      view {\n" +
-                "        axis left\n" +
-                "        bitmap z_7086_1/mini.png\n" +
-                "        joint 0\n" +
-                "        zorder 1\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          scale minsec\n" +
-                "          role chrono_minute\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id chrono_hour\n" +
-                "      view {\n" +
-                "        axis right\n" +
-                "        bitmap z_7086_1/mini.png\n" +
-                "        joint 0\n" +
-                "        zorder 1\n" +
-                "      }\n" +
-                "      roles [\n" +
-                "        {\n" +
-                "          states [before30min]\n" +
-                "          scale deci\n" +
-                "          role chrono_decisecond\n" +
-                "        }\n" +
-                "        {\n" +
-                "          states [after30min]\n" +
-                "          scale deci\n" +
-                "          role chrono_hour\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  ]\n" +
-                "  \n" +
-                "  triggers [\n" +
-                "    {\n" +
-                "      id A\n" +
-                "\t  rect { x 710 y 650 width 10 height 10 }\n" +
-                "      states []\n" +
-                "    }\n" +
-                "    {\n" +
-                "      id B\n" +
-                "\t  rect { x 710 y 650 width 10 height 10 }\n" +
-                "      states []\n" +
-                "    }\n" +
-                "  ]\n" +
-                "  \n" +
-                "  chrono {\n" +
-                "    hands [chrono_second, chrono_minute, chrono_hour]\n" +
-                "    buttons [A, B]\n" +
-                "    states [init stopped running freezed]\n" +
-                "    automat [\n" +
-                "      { from init, action A, to running }\n" +
-                "      { from running, action A, to stopped }\n" +
-                "      { from running, action B, to freezed }\n" +
-                "      { from freezed, action A, to stopped }\n" +
-                "      { from freezed, action B, to running }\n" +
-                "      { from stopped, action A, to running }\n" +
-                "      { from stopped, action B, to init }\n" +
-                "    ]\n" +
-                "  }\n" +
-                "}");
-        System.out.print(map);
+    public void testPitmParser() throws Exception {
+        InputStream is = getClass().getResourceAsStream("z_7086_1.pitm");
+        String data = streamToString(is);
+        HashMap<String, Object> map = PitmParser.parse(data);
+
+        StringBuilder mapString = new StringBuilder();
+        printMap(mapString, map, 0);
+        assertEquals(mapString.toString(), data);
     }
 }
