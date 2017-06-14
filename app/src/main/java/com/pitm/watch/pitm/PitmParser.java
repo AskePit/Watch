@@ -2,7 +2,6 @@ package com.pitm.watch.pitm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -10,7 +9,7 @@ import java.util.Stack;
  */
 
 public class PitmParser {
-    public static Map<String, Object> parse(String data) throws ParseException {
+    public static HashMap<String, Object> parse(String data) throws ParseException {
         return new PitmParserInternal().parse(data);
     }
 
@@ -99,10 +98,59 @@ public class PitmParser {
         }
 
         private String removeComments(String str) {
-            return str;
+            StringBuilder b = new StringBuilder();
+
+            boolean comment = false;
+            boolean block = false;
+            boolean line = false;
+
+            for(int i = 0; i<str.length(); ++i) {
+                char c = str.charAt(i);
+                boolean hasMore = i<str.length()-1;
+
+                if(line) {
+                    if(c == '\n') {
+                        b.append('\n');
+                        line = false;
+                    }
+                    continue;
+                }
+
+                if(block) {
+                    if(c == '*') {
+                        if(hasMore && str.charAt(++i) == '/') {
+                            block = false;
+                        }
+                    }
+                    continue;
+                }
+
+                if(c == '\"') {
+                    comment = !comment;
+                    b.append('\"');
+                    continue;
+                }
+
+                if(c == '/' && !comment && hasMore) {
+                    char next = str.charAt(++i);
+                    if(next == '/') {
+                        line = true;
+                    } else if(next == '*') {
+                        block = true;
+                    } else {
+                        b.append(c);
+                        b.append(next);
+                    }
+                    continue;
+                }
+
+                b.append(c);
+            }
+
+            return b.toString();
         }
 
-        Map<String, Object> parse(String data) throws ParseException {
+        HashMap<String, Object> parse(String data) throws ParseException {
             m_in = removeComments(data.trim());
             parseDocument();
             return m_out;
