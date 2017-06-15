@@ -22,14 +22,14 @@ public class PitmTest {
     }
 
     static void printMap(StringBuilder out, HashMap<String, Object> map, int depth) {
-        out.append("{\n");
+        out.append("{\r\n");
         ++depth;
         for(HashMap.Entry<String, Object> entry : map.entrySet()) {
             for(int i = 0; i<depth; ++i) out.append("    ");
             out.append(entry.getKey() + ' ');
             Object value = entry.getValue();
             if(value.getClass() == String.class) {
-                out.append((String)value + ",\n");
+                out.append((String)value + ",\r\n");
             } else if(value.getClass() == HashMap.class) {
                 printMap(out, (HashMap<String, Object>)value, depth);
             } else {
@@ -37,16 +37,16 @@ public class PitmTest {
             }
         }
         for(int i = 0; i<depth-1; ++i) out.append("    ");
-        out.append("},\n");
+        out.append("},\r\n");
     }
 
     static void printArray(StringBuilder out, ArrayList<Object> array, int depth) {
-        out.append("[\n");
+        out.append("[\r\n");
         ++depth;
         for(Object value : array) {
             for(int i = 0; i<depth; ++i) out.append("    ");
             if(value.getClass() == String.class) {
-                out.append((String)value + ",\n");
+                out.append((String)value + ",\r\n");
             } else if(value.getClass() == HashMap.class) {
                 printMap(out, (HashMap<String, Object>)value, depth);
             } else {
@@ -54,7 +54,7 @@ public class PitmTest {
             }
         }
         for(int i = 0; i<depth-1; ++i) out.append("    ");
-        out.append("],\n");
+        out.append("],\r\n");
     }
 
     @Test
