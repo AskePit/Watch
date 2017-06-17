@@ -33,7 +33,7 @@ public class Watch {
     private void calcBitmapSettings(Canvas canvas) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
-        Bitmap bitmap = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.z_7086_1_z_7086_1, options);
+        Bitmap bitmap = BitmapFactory.decodeResource(m_context.getResources(), m_bitmapId, options);
 
         int deviceWidth = canvas.getWidth();
         int deviceHeight = canvas.getHeight();
@@ -103,8 +103,6 @@ public class Watch {
                 canvas.drawLine(startPos.xf(), startPos.yf(), endPos.xf(), endPos.yf(), paint);
             }
         }
-
-
     }
 
     private ArrayList<Face> m_faces; {

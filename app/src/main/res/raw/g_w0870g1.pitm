@@ -1,0 +1,138 @@
+{
+  id g_w0870g1
+  bitmap g_w0870g1_g_w0870g1.jpg
+  
+  axises [
+    { id main,  pos { x 230 y 379 } }
+    { id week,  pos { x 172 y 379 } }
+    { id month, pos { x 230 y 322 } }
+    { id day,   pos { x 286 y 379 } }
+  ]
+  
+  scales [
+    {
+      id hour
+      val    { type NUMBER, min 0 max 12 }
+      degree { min 0 max 360 }
+    }
+    {
+      id minsec
+      val    { type NUMBER, min 0 max 60 }
+      degree { min 0 max 360 }
+    }
+    {
+      id week
+      val    { type DAY_OF_WEEK, zero SUN }
+      degree { min 0 max 360 }
+    }
+	{
+      id month
+      val    { type MONTH, zero DEC }
+      degree { min 0 max 360 }
+    }
+	{
+      id day
+      val    { type NUMBER, min 0, max 31 }
+      degree { min 0 max 360 }
+    }
+  ]
+  
+  hands [
+    { 
+      id hour
+      view {
+        axis main
+        bitmap g_w0870g1_hour.png
+        joint 20
+        zorder 1
+      }
+      roles [
+        {
+          scale hour
+          role HOUR
+		  precision SECOND
+        }
+      ]
+    }
+    { 
+      id minute
+      view {
+        axis main
+        bitmap g_w0870g1_minute.png
+        joint 20
+        zorder 2
+      }
+      roles [
+        {
+          scale minsec
+          role MINUTE
+		  precision SECOND
+        }
+      ]
+    }
+    {
+      id second
+      view {
+        axis right
+        bitmap g_w0870g1_second.png
+        joint 30
+        zorder 3
+      }
+      roles [
+        {
+          scale minsec
+          role SECOND
+		  precision SELF
+        }
+      ]
+    }
+    {
+      id week
+      view {
+        axis week
+        bitmap g_w0870g1_mini.png
+        joint 5
+        zorder 0
+      }
+      roles [
+        {
+          scale week
+          role DAY_OF_WEEK
+		  precision SELF
+        }
+      ]
+    }
+    {
+      id month
+      view {
+        axis month
+        bitmap g_w0870g1_mini.png
+        joint 5
+        zorder 0
+      }
+      roles [
+        {
+          scale month
+          role MONTH
+		  precision SELF
+        }
+      ]
+    }
+    {
+      id day
+      view {
+        axis day
+        bitmap g_w0870g1_mini.png
+        joint 5
+        zorder 0
+      }
+      roles [
+        {
+          scale day
+          role DAY
+		  precision SELF
+        }
+      ]
+    }
+  ]
+}

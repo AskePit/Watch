@@ -26,6 +26,7 @@ public class CanvasView extends View {
         super.onDraw(canvas);
 
         Paint paint = new Paint();
+
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
         canvas.drawPaint(paint);
