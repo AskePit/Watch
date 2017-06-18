@@ -12,17 +12,17 @@
   scales [
     {
       id hour
-      val    { min 0 max 12 }
+      val    { type NUMBER, min 0 max 12 }
       degree { min 0 max 360 }
     }
     {
       id minsec
-      val    { min 0 max 60 }
+      val    { type NUMBER, min 0 max 60 }
       degree { min 0 max 360 }
     }
     {
       id deci
-      val    { min 0 max 10 }
+      val    { type NUMBER, min 0 max 10 }
       degree { min 0 max 360 }
     }
   ]
@@ -40,6 +40,7 @@
         {
           scale hour
           role hour
+          precision SEC
         }
       ]
     }
@@ -55,6 +56,7 @@
         {
           scale minsec
           role minute
+          precision SEC
         }
       ]
     }
@@ -70,6 +72,7 @@
         {
           scale minsec
           role second
+          precision SELF
         }
       ]
     }
@@ -85,6 +88,7 @@
         {
           scale minsec
           role chrono_second
+          precision SELF
         }
       ]
     }
@@ -100,6 +104,7 @@
         {
           scale minsec
           role chrono_minute
+          precision SELF
         }
       ]
     }
@@ -116,11 +121,13 @@
           states [before30min]
           scale deci
           role chrono_decisecond
+          precision SELF
         }
         {
           states [after30min]
           scale deci
           role chrono_hour
+          precision SELF
         }
       ]
     }
