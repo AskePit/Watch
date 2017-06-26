@@ -1,7 +1,10 @@
+pitm 1.0
+doc 1.0
+
 {
   id g_w0870g1
   bitmap g_w0870g1_g_w0870g1.jpg
-  
+    
   axises [
     { id main,  pos { x 230 y 379 } }
     { id week,  pos { x 172 y 379 } }
@@ -12,33 +15,28 @@
   scales [
     {
       id hour
-      val    { type NUMBER, min 0 max 12 }
-      degree { min 0 max 360 }
+      value { type NUMBER, min 0 max 12 }
     }
     {
       id minsec
-      val    { type NUMBER, min 0 max 60 }
-      degree { min 0 max 360 }
+      value { type NUMBER, min 0 max 60 }
     }
     {
       id week
-      val    { type DAY_OF_WEEK, zero SUN }
-      degree { min 0 max 360 }
+      value { type DAY_OF_WEEK, zero SUN }
     }
-	{
+    {
       id month
-      val    { type MONTH, zero DEC }
-      degree { min 0 max 360 }
+      value { type MONTH, zero DEC }
     }
-	{
+    {
       id day
-      val    { type NUMBER, min 0, max 31 }
-      degree { min 0 max 360 }
+      value { type NUMBER, min 0, max 31 }
     }
   ]
   
   hands [
-    { 
+    {
       id hour
       view {
         axis main
@@ -46,15 +44,13 @@
         joint 20
         zorder 1
       }
-      roles [
-        {
-          scale hour
-          role HOUR
-          precision SEC
-        }
-      ]
+      role {
+        unit HOUR
+        scale hour
+        precision SEC
+      }
     }
-    { 
+    {
       id minute
       view {
         axis main
@@ -62,13 +58,11 @@
         joint 20
         zorder 2
       }
-      roles [
-        {
-          scale minsec
-          role MIN
-          precision { unit MILLISEC value 250 }
-        }
-      ]
+      roles {
+        unit MIN
+        scale minsec
+        precision SEC
+      }
     }
     {
       id second
@@ -78,13 +72,11 @@
         joint 30
         zorder 3
       }
-      roles [
-        {
-          scale minsec
-          role SEC
-          precision SELF
-        }
-      ]
+      roles {
+        unit SEC
+        scale minsec
+        precision SELF
+      }
     }
     {
       id week
@@ -94,13 +86,11 @@
         joint 5
         zorder 0
       }
-      roles [
-        {
-          scale week
-          role DAY_OF_WEEK
-          precision SELF
-        }
-      ]
+      role {
+        unit DAY_OF_WEEK
+        scale week
+        precision SELF
+      }
     }
     {
       id month
@@ -110,13 +100,11 @@
         joint 5
         zorder 0
       }
-      roles [
-        {
-          scale month
-          role MONTH
-          precision SELF
-        }
-      ]
+      role {
+        unit MONTH
+        scale month
+        precision SELF
+      }
     }
     {
       id day
@@ -126,13 +114,11 @@
         joint 5
         zorder 0
       }
-      roles [
-        {
-          scale day
-          role DAY
-		  precision SELF
-        }
-      ]
+      role {
+        unit DAY
+        scale day
+        precision SELF
+      }
     }
   ]
 }

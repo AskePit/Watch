@@ -1,0 +1,224 @@
+pitms 1.0
+doc 1.0
+
+// Scale may be represented either by range of numbers either by specific strings/chars
+ScaleValueType (
+    NUMBER       // ex. 0-12 or 0-60
+    DAY_OF_WEEK  // ex. MON-SUN or M-S
+    MONTH        // ex. JAN-DEC or J-D
+)
+
+Month     ( JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC )
+DayOfWeek ( MON TUE WED THU FRI SAT SUN )
+
+Point {
+    x: int // in pixels
+    y: int
+}
+
+Rect {
+    x: int // in pixels
+    y: int
+    width: int
+    height: int
+}
+
+// Scale value specifics
+ScaleValue {
+    type: ScaleValueType
+    switch type (
+        NUMBER < min:real, max:real >  // numbers range. Ex.: 0-12
+        DAY_OF_WEEK => zero: DayOfWeek // zero value is a start value of scale. Ex.: SUN or DEC
+        MONTH       => zero: Month
+    )
+}
+
+// Scale arg shape: round or specific arc. 
+ScaleDegree (
+    ROUND
+    { min:real max:real } // in degrees. 0 is a top of a round.
+)
+
+Scale {
+    id: str
+    degree?: ScaleDegree /* Only in case of round scale for hands indication. Labels' scales do not have this property.
+                            If property is not specified for a hand, than ROUND assumed.
+                            If property is specified for a label, it is ignored.
+                         */
+    value: ScaleValue
+}
+
+// Pivot point for one or several hands
+Axis {
+    id: str
+    pos: Point
+}
+
+// Unit responsible for current time
+Watch {
+    id: str
+    timezone: real // time difference from origin in hours
+}
+
+// Button, switch, relay that can send signals
+Trigger {
+    id: str
+    view: Rect
+}
+
+ChronographState (
+    INIT        // chronograph is stopped, hands and labels are in initial positions
+    RUNNING     // chronograph runs
+    STOPPED     // chronograph is stopped, hands and labels are not in initial positions
+    
+    FREEZED     // chronograph hands and labels show exact time point (chronograph itself might be running or stopped)
+    UNFREEZED   // chronograph hands and labels are changing along with chronograph
+)
+
+ChronographStates ( ChronographState, [ ChronographState ] )
+
+AutomatTransition {
+    from: ChronographStates
+    action: Trigger.id
+    to: ChronographStates
+}
+
+// Unit responsible for measuring time periods
+Chronograph {
+    id: str
+    automat [ AutomatTransition ]
+}
+
+// Unit responsible for showing rest watch power reserve
+PowerReserve {
+    id: str
+}
+
+Owner (
+    Watch.id
+    Chronograph.id
+    PowerReserve.id
+)
+
+TimeUnit (
+    NANOSEC
+    MICROSEC
+    MILLISEC
+    SEC
+    MIN
+    HOUR
+    DAY
+    DAY_OF_WEEK
+    WEEK
+    MONTH
+    YEAR
+    CENTURY
+)
+
+Sign ( EQ LESS GREATER LESS_EQ GREATER_EQ )
+
+TimePoint {
+    unit: TimeUnit
+    value: real
+}
+
+RoleCondition {
+    owner: Owner // owner to get 'time' from to aplpy this condition
+    sign: Sign
+    time: TimePoint
+}
+
+RoleConditions [RoleCondition]
+
+LabelRender {
+    (
+        font {
+            name: str
+            size: int // px
+        }
+        bitmaps [
+            {
+                value: (DayOfWeek Month real)
+                bitmap: str
+            }
+        ]
+    )
+}
+
+IndicatorRole {
+    id?: str         // Only needed if we want to refer to it. Ex. in label bitmaps.
+    owner?: Owner    // if owner is not specified then owner is a main watch. 'owner' and 'unit' exactly identifiy inticator's function.
+    unit: TimeUnit
+    scale: Scale.id
+    precision (   // how often identificator is updated
+        SELF      // 'unit' units
+        TimeUnit  // 1 specified unit 
+        TimePoint // TimePoint.value specified units
+    )
+    ( // If condition specified then indicator plays this role only in case if condition is true. If conditions are omitted then always assumed.
+        condition: RoleCondition
+        conditions: RoleConditions
+    )
+    render?: LabelRender // if indicator is label then render detailrs should be specified
+}
+
+/*
+    Every indicator can switch its role depending on a situation (time events, chrono start/stop etc).
+    If more than one role do not have 'condition' then first role in array assumed to be always used.
+*/
+IndicatorRoles [IndicatorRole]
+
+// Hand indicator
+Hand {
+    id: str
+    view {
+        axis: Axis.id
+        bitmap: str
+        joint: int // place of hand's pivot point. Measured from hand's tail/root. Units: px.
+        zorder: int
+    }
+    (
+        role: IndicatorRole
+        roles: IndicatorRoles
+    )
+}
+
+LabelShape (RECT TRIANGLE ROUND OVAL CUSTOM)
+
+// Non-hand indicator
+Label {
+    id: str
+    view {
+        shape: LabelShape
+        switch shape (
+            RECT => coords {
+                lt: Point // left top
+                rt: Point // right top
+                lb: Point // left bottom
+                rb: Point // right bottom
+            }
+            TRIANGLE => coords {
+                p1: Point
+                p2: Point
+                p3: Point
+            }
+            ROUND => center: Point
+        )
+    }
+    (
+        role: IndicatorRole
+        roles: IndicatorRoles
+    )
+}
+
+doc {
+    id: str
+    bitmap: str
+    watches?      :[ Watch ]
+    triggers?     :[ Trigger ]
+    chronographs? :[ Chronograph ]
+    labels?       :[ Label ]
+    axises?       :[ Axis ]
+    scales?       :[ Scale ]
+    hands?        :[ Hand ]
+}

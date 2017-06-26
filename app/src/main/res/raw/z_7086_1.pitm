@@ -1,6 +1,90 @@
+pitm 1.0
+doc 1.0
+
 {
   id z_7086_1
   bitmap z_7086_1/z_7086_1.jpg
+  
+  watches [
+    {
+      id watch
+      timezone 0
+    }
+  ]
+  
+  triggers [
+    {
+      id A
+      view { x 710 y 650 width 10 height 10 }
+    }
+    {
+      id B
+      view { x 710 y 650 width 10 height 10 }
+    }
+  ]
+  
+  chronographs [
+    {
+      id chrono   
+      automat [
+        { from INIT, action A, to RUNNING }
+        { from RUNNING, action A, to STOPPED }
+        { from STOPPED, action A, to RUNNING }
+        { from [RUNNING UNFREEZED], action B, to FREEZED }
+        { from [STOPPED UNFREEZED], action B, to INIT }
+        { from FREEZED, action B, to UNFREEZED }
+      ]
+    }
+  ]
+  
+  scales [
+    {
+      id hour
+      degree ROUND
+      value { type NUMBER, min 0 max 12 }
+    }
+    {
+      id minsec
+      degree ROUND
+      value { type NUMBER, min 0 max 60 }
+    }
+    {
+      id half_hour
+      degree ROUND
+      value { type NUMBER, min 0 max 30 }
+    }
+    {
+      id day
+      value { type NUMBER, min 1 max 31 }
+    }
+  ]
+  
+  labels [
+    {
+      id day
+      view {
+        shape RECT
+        coords {
+          lt { x 740 y 687 }
+          rt { x 784 y 711 }
+          lb { x 722 y 716 }
+          rb { x 766 y 741 }
+        }
+      }
+      role {
+        owner watch
+        unit DAY
+        scale day
+        precision SELF
+        render {
+          font {
+            name: Arial
+            size: 35
+          }
+        }
+      }
+    }
+  ]
   
   axises [
     { id main,   pos { x 600 y 621 } }
@@ -9,26 +93,8 @@
     { id bottom, pos { x 596 y 739 } }
   ]
   
-  scales [
-    {
-      id hour
-      val    { type NUMBER, min 0 max 12 }
-      degree { min 0 max 360 }
-    }
-    {
-      id minsec
-      val    { type NUMBER, min 0 max 60 }
-      degree { min 0 max 360 }
-    }
-    {
-      id deci
-      val    { type NUMBER, min 0 max 10 }
-      degree { min 0 max 360 }
-    }
-  ]
-  
   hands [
-    { 
+    {
       id hour
       view {
         axis main
@@ -36,13 +102,12 @@
         joint 0
         zorder 2
       }
-      roles [
-        {
-          scale hour
-          role hour
-          precision SEC
-        }
-      ]
+      role {
+        owner watch
+        unit HOUR
+        scale hour
+        precision SEC
+      }
     }
     { 
       id minute
@@ -52,13 +117,12 @@
         joint 0
         zorder 3
       }
-      roles [
-        {
-          scale minsec
-          role minute
-          precision SEC
-        }
-      ]
+      role {
+        owner watch
+        unit MIN
+        scale minsec
+        precision SEC
+      }
     }
     {
       id second
@@ -68,13 +132,12 @@
         joint 0
         zorder 1
       }
-      roles [
-        {
-          scale minsec
-          role second
-          precision SELF
-        }
-      ]
+      role {
+        owner watch
+        unit SEC
+        scale minsec
+        precision SELF
+      }
     }
     {
       id chrono_second
@@ -84,13 +147,12 @@
         joint 0
         zorder 4
       }
-      roles [
-        {
-          scale minsec
-          role chrono_second
-          precision SELF
-        }
-      ]
+      role {
+        owner chrono
+        unit SEC
+        scale minsec
+        precision SELF
+      }
     }
     {
       id chrono_minute
@@ -100,13 +162,12 @@
         joint 0
         zorder 1
       }
-      roles [
-        {
-          scale minsec
-          role chrono_minute
-          precision SELF
-        }
-      ]
+      role {
+        owner chrono
+        unit MIN
+        scale half_hour
+        precision SELF
+      }
     }
     {
       id chrono_hour
@@ -116,62 +177,12 @@
         joint 0
         zorder 1
       }
-      roles [
-        {
-          states [before30min]
-          scale deci
-          role chrono_decisecond
-          precision SELF
-        }
-        {
-          states [after30min]
-          scale deci
-          role chrono_hour
-          precision SELF
-        }
-      ]
+      role {
+        owner chrono
+        unit HOUR
+        scale hour
+        precision { unit MIN value 30 }
+      }
     }
   ]
-  
-  triggers [
-    {
-      id A
-	  rect { x 710 y 650 width 10 height 10 }
-      states []
-    }
-    {
-      id B
-	  rect { x 710 y 650 width 10 height 10 }
-      states []
-    }
-    /*{
-      id C
-      rect { x 710 y 650 width 10 height 10 }
-      states [
-        {
-          id a
-          bitmap z_7086_1/Ca.png
-        }
-        {
-          id b
-          bitmap z_7086_1/Cb.png
-        }
-      ]
-    }*/
-  ]
-  
-  chrono {
-    hands [chrono_second, chrono_minute, chrono_hour]
-    buttons [A, B]
-    states [init stopped running freezed]
-    automat [
-      { from init, action A, to running }
-      { from running, action A, to stopped }
-      { from running, action B, to freezed }
-      { from freezed, action A, to stopped }
-      { from freezed, action B, to running }
-      { from stopped, action A, to running }
-      { from stopped, action B, to init }
-    ]
-  }
 }
