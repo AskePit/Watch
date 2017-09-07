@@ -1,0 +1,155 @@
+pitm 1.0
+doc 1.0
+
+{
+  id j_6060_5
+  bitmap j_6060_5_j_6060_5.jpg
+  
+  watches [
+    {
+      id watch
+      timezone 0
+    }
+  ]
+  
+  powerReserves [
+    {
+	  id power
+	}
+  ]
+    
+  axises [
+    { id main,    pos { x 0 y 0 } } // TODO: calculate
+    { id power,   pos { x 0 y 0 } }
+    { id small24, pos { x 0 y 0 } }
+  ]
+  
+  scales [
+    {
+      id hour
+      value { type NUMBER, min 0 max 12 }
+    }
+    {
+      id minsec
+      value { type NUMBER, min 0 max 60 }
+    }
+    {
+      id hour24
+      value { type NUMBER, min 0 max 24 }
+    }
+	{
+      id power
+	  degree: { min: 210 max: 150 }
+      value { type NUMBER, min 0 max 48 }
+    }
+	{
+      id day
+      value { type NUMBER, min 1 max 31 }
+    }
+  ]
+  
+  hands [
+    {
+      id hour
+      view {
+        axis main
+        bitmap j_6060_5_hour.png
+        joint 20
+        zorder 1
+      }
+      role {
+	    owner watch
+        unit HOUR
+        scale hour
+        precision { unit MILLISEC value 200 }
+      }
+    }
+    {
+      id minute
+      view {
+        axis main
+        bitmap j_6060_5_minute.png
+        joint 20
+        zorder 2
+      }
+      role {
+	    owner watch
+        unit MIN
+        scale minsec
+        precision { unit MILLISEC value 200 }
+      }
+    }
+    {
+      id second
+      view {
+        axis main
+        bitmap j_6060_5_second.png
+        joint 30
+        zorder 3
+      }
+      role {
+	    owner watch
+        unit SEC
+        scale minsec
+        precision { unit MILLISEC value 200 }
+      }
+    }
+	{
+      id hour24
+      view {
+        axis hour24
+        bitmap j_6060_5_hour24.png
+        joint 1
+        zorder 1
+      }
+      role {
+	    owner watch
+        unit HOUR
+        scale hour
+        precision MIN
+      }
+    }
+	{
+      id power
+      view {
+        axis power
+        bitmap j_6060_5_power.png
+        joint 1
+        zorder 1
+      }
+      role {
+	    owner power
+        unit HOUR
+        scale power
+        precision { unit MILLISEC value 200 }
+      }
+    }
+  ]
+  
+  labels [
+    {
+      id day
+      view {
+        shape RECT
+        coords {
+          lt { x 0 y 0 }  // TODO: calculate
+          rt { x 0 y 0 }
+          lb { x 0 y 0 }
+          rb { x 0 y 0 }
+        }
+      }
+      role {
+        owner watch
+        unit DAY
+        scale day
+        precision SELF
+        render {
+          font {
+            name: Arial
+            size: 35
+          }
+        }
+      }
+    }
+  ]
+}
