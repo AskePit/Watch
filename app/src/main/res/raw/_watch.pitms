@@ -214,11 +214,12 @@ Label {
 doc {
     id: str
     bitmap: str
-    watches?      :[ Watch ]
-    triggers?     :[ Trigger ]
-    chronographs? :[ Chronograph ]
-    labels?       :[ Label ]
-    axises?       :[ Axis ]
-    scales?       :[ Scale ]
-    hands?        :[ Hand ]
+    watches?       :[ Watch ]
+    triggers?      :[ Trigger ]
+    chronographs?  :[ Chronograph ]
+    powerReserves? :[ PowerReserve ]
+    labels?        :[ Label ]
+    axises?        :[ Axis ]
+    scales?        :[ Scale ]
+    hands?         :[ Hand ]
 }
